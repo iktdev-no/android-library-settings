@@ -31,14 +31,15 @@ jobs:
       run: |
         version=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')
         sed -i "s/version '.*'/version '$version'/g" build.gradle
+        grep -o "version '$version'" build.gradle
 
     - name: Build library
       working-directory: ${{ github.workspace }}/library/setting
-      run: ../../../gradlew assembleRelease
+      run: ../../gradlew assembleRelease
 
     - name: Publish to Reposilite
       working-directory: ${{ github.workspace }}/library/setting
-      run: ../../../gradlew publish
+      run: ../../gradlew publish
       env:
         reposiliteUsername: ${{ secrets.reposiliteUsername }}
         reposilitePassword: ${{ secrets.reposilitePassword }}
