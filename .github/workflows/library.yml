@@ -42,8 +42,8 @@ jobs:
     - name: Publish to Reposilite
       if: github.event.release && github.event.release.tag_name
       working-directory: ${{ github.workspace }}/library/setting
+      env:
+        reposiliteUsername: ${{ secrets.reposiliteUsername }}
+        reposilitePassword: ${{ secrets.reposilitePassword }}
       run: |
         ../../gradlew publish
-        env:
-          reposiliteUsername: ${{ secrets.reposiliteUsername }}
-          reposilitePassword: ${{ secrets.reposilitePassword }}
