@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="defaultText">#FFF</color>
+    <color name="background">#000</color>
+
+    <color name="viewBackground">#232323</color>
+    <color name="viewBackgroundDark">#1C1C1C</color>
+    <color name="toolbar">#232323</color>
+    <color name="hoverControlBackground">#1C1C1C</color>
+
+</resources>

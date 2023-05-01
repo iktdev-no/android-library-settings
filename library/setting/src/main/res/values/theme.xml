@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SettingLibrary.SettingActivity" parent="Base.SettingActivity" />
+
+    <style name="Base.SettingActivity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+
+        <item name="android:textColor">@color/defaultText</item>
+        <item name="android:colorControlNormal">@color/defaultText</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/background</item>
+
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="SettingComponents" parent="SettingLibrary.SettingActivity">
+        <item name="background">@drawable/effect_ripple_dark</item>
+        <item name="srcTint">@color/defaultText</item>
+        <item name="textColor">@color/defaultText</item>
+        <item name="subTextColor">@color/colorAccent</item>
+        <item name="openSrcTint">@color/defaultText</item>
+        <item name="spinnerBackground">@color/colorAccent</item>
+        <item name="popupBackground">@drawable/effect_ripple_dark_rounded</item>
+    </style>
+
+    <style name="SettingComponents.Single" parent="SettingComponents">
+        <item name="background">@drawable/effect_ripple_dark_rounded</item>
+    </style>
+    <style name="SettingComponents.Top" parent="SettingComponents">
+        <item name="background">@drawable/effect_ripple_dark_rounded_top</item>
+    </style>
+    <style name="SettingComponents.Bottom" parent="SettingComponents">
+        <item name="background">@drawable/effect_ripple_dark_rounded_bottom</item>
+    </style>
+</resources>

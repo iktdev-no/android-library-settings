@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="text" format="string|reference" />
+    <attr name="subtext"  format="string|reference" />
+    <attr name="src" format="reference" />
+    <attr name="textColor" format="reference|color" />
+    <attr name="subTextColor" format="color|reference" />
+    <attr name="srcTint" format="reference|color" />
+    <attr name="defaultSwitchValue" format="boolean" />
+    <attr name="enabled" format="reference|boolean" />
+    <attr name="srcAction" format="reference" />
+    <attr name="openSrcTint" format="reference" />
+    <attr name="spinnerBackground" format="reference|color" />
+    <attr name="popupBackground" format="reference|color" />
+    <attr name="background" format="reference" />
+    <attr name="selectedTextColor" format="color|reference" />
+
+    <declare-styleable name="SettingViewHeader">
+        <attr name="title" />
+        <attr name="textColor" />
+        <attr name="background" />
+
+    </declare-styleable>
+
+    <declare-styleable name="SettingViewSlider">
+        <attr name="text" />
+        <attr name="textColor" />
+        <attr name="background" />
+        <attr name="max" format="reference|integer" />
+        <attr name="min" format="reference|integer" />
+        <attr name="current" format="reference|integer" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingViewClickable">
+        <attr name="text" />
+        <attr name="textColor" />
+        <attr name="subtext" />
+
+        <attr name="src" />
+        <attr name="srcTint" />
+        <attr name="subTextColor" />
+
+        <attr name="background" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingViewInputText">
+        <attr name="title" format="string|reference" />
+        <attr name="text" />
+        <attr name="textColor" />
+        <attr name="border" format="reference" />
+
+        <attr name="background" />
+    </declare-styleable>
+
+
+    <declare-styleable name="SettingViewSwitch">
+        <attr name="text" />
+        <attr name="textColor" />
+        <attr name="subtext" />
+        <attr name="subTextColor" />
+        <attr name="src" />
+        <attr name="srcTint" />
+        <attr name="background" />
+
+        <attr name="defaultSwitchValue" />
+        <attr name="enabled" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingViewLaunch">
+        <attr name="text" />
+        <attr name="textColor" />
+        <attr name="subtext" />
+        <attr name="subTextColor" />
+
+        <attr name="src" />
+        <attr name="srcTint" />
+        <attr name="openSrcTint" />
+        <attr name="srcAction" />
+
+        <attr name="background" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingViewDropdown">
+        <attr name="text" />
+        <attr name="textColor" />
+
+        <attr name="spinnerBackground"/>
+        <attr name="background" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingViewPopoutSelect">
+        <attr name="text" />
+        <attr name="textColor" />
+        <attr name="subTextColor" />
+
+        <attr name="src" />
+        <attr name="srcTint" />
+
+        <attr name="popupBackground"/>
+        <attr name="background" />
+    </declare-styleable>
+
+</resources>

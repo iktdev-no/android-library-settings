@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/SettingComponents"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="72dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/view_setting_switch_image"
+        tools:src="@drawable/ic_android_black_24dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/view_setting_switch_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHeight_min="28dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_goneMarginBottom="8dp"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toTopOf="@+id/view_setting_switch_sub_text"
+        app:layout_constraintEnd_toStartOf="@+id/view_setting_switch"
+        app:layout_constraintStart_toEndOf="@+id/view_setting_switch_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Main Text" />
+
+    <TextView
+        android:id="@+id/view_setting_switch_sub_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/view_setting_switch"
+        app:layout_constraintStart_toEndOf="@+id/view_setting_switch_image"
+        android:visibility="gone" />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/view_setting_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:saveEnabled="false"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_min="72dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

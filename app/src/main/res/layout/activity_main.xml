@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/go_to_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Go to Settings"
+                tools:ignore="HardcodedText" />
+            <Button
+                android:id="@+id/start_lock_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lock activity"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/start_screen"
+                android:text="Screen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <no.iktdev.setting.ui.components.SettingViewSwitch
+                app:src="@drawable/ic_baseline_launch_24"
+                app:text="Potet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <no.iktdev.setting.ui.components.SettingViewClickable
+                android:id="@+id/toast_me"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:src="@drawable/ic_baseline_launch_24"
+                app:srcTint="@color/colorAccent"
+                app:text="Test"
+                />
+            <no.iktdev.setting.ui.components.SettingViewLaunch
+                android:id="@+id/launc_test"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:src="@drawable/ic_baseline_launch_24"
+                app:srcTint="@color/colorAccent"
+                app:text="Potet"
+                />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

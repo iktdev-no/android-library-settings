@@ -1,1 +1,2 @@
-# android-library-settings
+Settings library
+
