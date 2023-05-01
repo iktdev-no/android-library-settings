@@ -24,7 +24,7 @@ jobs:
       run: chmod +x gradlew
       
     - name: Test
-      run: find . -maxdepth 2 -type f -print
+      run: ls -la
       
     - name: Set library version
       working-directory: ${{ github.workspace }}/library/settings
