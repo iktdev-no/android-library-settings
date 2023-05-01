@@ -71,7 +71,10 @@ afterEvaluate {
                 /// name "SettingsLibrary"
                 groupId "no.iktdev.android"
                 artifactId "setting"
-                version '0.0.19-alpha1'
+
+                // To create release version, use the "v0.0.0" Schema for release tag
+                version 'TBD'
+
 
                 artifact(bundleReleaseAar)
             }
