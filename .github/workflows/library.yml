@@ -5,6 +5,8 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -29,17 +31,23 @@ jobs:
     - name: Set library version
       working-directory: ${{ github.workspace }}/library/setting
       run: |
-        version=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')
-        sed -i "s/version '.*'/version '$version'/g" build.gradle
-        grep -o "version '$version'" build.gradle
+        if [ -n "${{ github.event.release.tag_name }}" ]; then
+          version=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')
+          sed -i "s/version '.*'/version '$version'/g" build.gradle
+          grep -o "version '$version'" build.gradle
+        else
+          echo "No release tag found. Skipping library version update."
+        fi
 
     - name: Build library
       working-directory: ${{ github.workspace }}/library/setting
       run: ../../gradlew assembleRelease
 
     - name: Publish to Reposilite
+      if: github.event.release && github.event.release.tag_name
       working-directory: ${{ github.workspace }}/library/setting
-      run: ../../gradlew publish
-      env:
-        reposiliteUsername: ${{ secrets.reposiliteUsername }}
-        reposilitePassword: ${{ secrets.reposilitePassword }}
+      run: |
+        ../../gradlew publish
+        env:
+          reposiliteUsername: ${{ secrets.reposiliteUsername }}
+          reposilitePassword: ${{ secrets.reposilitePassword }}
