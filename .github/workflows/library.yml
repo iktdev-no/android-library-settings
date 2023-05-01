@@ -24,17 +24,17 @@ jobs:
       run: chmod +x gradlew
       
     - name: Set library version
-      working-directory: ./library/settings
+      working-directory: ${{ github.workspace }}/library/settings
       run: |
         version=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')
         sed -i "s/version '.*'/version '$version'/g" build.gradle
 
     - name: Build library
-      working-directory: ./library/settings
+      working-directory: ${{ github.workspace }}/library/settings
       run: ../../../gradlew assembleRelease
 
     - name: Publish to Reposilite
-      working-directory: ./library/settings
+      working-directory: ${{ github.workspace }}/library/settings
       run: ../../../gradlew publish
       env:
         reposiliteUsername: ${{ secrets.reposiliteUsername }}
