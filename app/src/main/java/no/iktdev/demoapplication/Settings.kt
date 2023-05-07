@@ -1,24 +1,29 @@
 package no.iktdev.demoapplication
 
 import android.content.Context
-import no.iktdev.setting.access.SettingDefined
-import no.iktdev.setting.access.SettingInstance
-import no.iktdev.setting.model.Setting
-import no.iktdev.setting.model.SettingKey
+import no.iktdev.setting.access.GroupBasedSetting
 
 class Settings {
-    sealed class Wireless(value: String) : SettingKey(value) {
-        companion object {
-            val group: String = "Wireless"
-            fun get(context: Context) = SettingInstance<Wireless>(context, group)
-        }
-        class Offline : Wireless("Offline mode")
+
+    sealed class PreferenceTest(key: String) : GroupBasedSetting("Preference", key) {
+        class BeFancy : PreferenceTest("Im Very fancy")
     }
 
-    class Test: Setting() {
-        val testVal = "Potato"
+    sealed class SwitchTest(key: String): GroupBasedSetting("Switchy", key) {
+
+        class ImFancyNoOne : SwitchTest("FancyNoOne")
+        class ImFancyNoTwo : SwitchTest("FancyNoTwo")
+        class ImFancyNoThree : SwitchTest("FancyNoThree")
+
+        class ToggleMe: SwitchTest("ImToggled")
+        class ReactiveToggle: SwitchTest("ReactiveToggle")
+
     }
 
-    val testTing = SettingDefined(null, Test().testVal)
+    sealed class ValueSelector(key: String): GroupBasedSetting("Valuy", key) {
+        class PercentageIsFun : ValueSelector("PercentalgeIsFun")
+        class SelectSomething : ValueSelector("SelectSomething")
+    }
+
 
 }

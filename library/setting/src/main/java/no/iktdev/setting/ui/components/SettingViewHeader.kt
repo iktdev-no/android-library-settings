@@ -5,7 +5,6 @@ import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import no.iktdev.setting.R
-import no.iktdev.setting.access.SettingDefined
 import no.iktdev.setting.databinding.SettingViewHeaderBinding
 import no.iktdev.setting.model.ComponentData
 import no.iktdev.setting.model.SettingComponentDescriptorBase
@@ -37,9 +36,6 @@ class SettingViewHeader(context: Context, attrs: AttributeSet? = null, defStyleA
 
     }
 
-    override fun onSettingAssigned(settingDefined: SettingDefined) {
-
-    }
 
     override fun setPayload(payload: ComponentData) {
     }

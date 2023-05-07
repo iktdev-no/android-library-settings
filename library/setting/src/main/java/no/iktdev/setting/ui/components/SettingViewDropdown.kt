@@ -53,8 +53,8 @@ class SettingViewDropdown(context: Context, attrs: AttributeSet? = null) :
         binding.title.text = base.title
     }
 
-    override fun onSettingAssigned(settingDefined: SettingDefined) {
-        val value: Any? = settingDefined.getSettings(context)?.get(settingDefined.settingKey)
+    override fun onSettingAssigned(setting: SettingDefined) {
+        val value: Any? = setting.getSettings(context)?.get(setting.key)
         val item = adapter?.items?.find { it.value == value }
         if (item != null) {
             val index = adapter?.items?.indexOf(item) ?: 0
@@ -83,20 +83,19 @@ class SettingViewDropdown(context: Context, attrs: AttributeSet? = null) :
     val selectionChange = object: AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             val item = adapter?.items?.get(position)
-            val setting = if (settingDefined is ReactiveSettingDefined) settingDefined as ReactiveSettingDefined else settingDefined
-            if (setting is ReactiveSettingDefined) {
-                if (item?.payload != null)
-                    setting.reactivePayload = item.payload
-                else if (item?.value != null && item.value is Serializable)
-                    setting.reactivePayload = item.value as Serializable
-            }
-            // Toast.makeText(context, "Dropdown is selected", Toast.LENGTH_LONG).show()
-            when (item?.value) {
-                is String -> settingDefined?.setString(context, item.value as String)
-                is Int -> settingDefined?.setInt(context, item.value as Int)
-                is Float -> settingDefined?.setFloat(context, item.value as Float)
-                is Boolean -> settingDefined?.setBoolean(context, item.value as Boolean)
-                else -> Log.e(this::class.simpleName, "Unsupported item provided!")
+            setting?.let { setting ->
+                val payload = if (item?.payload != null) item.payload else if (item?.value is Serializable) item.value else null
+                if (setting is ReactiveSettingDefined && payload != null && payload is Serializable) {
+                    (setting as ReactiveSettingDefined).setPayload(payload)
+                }
+
+                when (item?.value) {
+                    is String -> setting.setString(context, item.value as String)
+                    is Int -> setting.setInt(context, item.value as Int)
+                    is Float -> setting.setFloat(context, item.value as Float)
+                    is Boolean -> setting.setBoolean(context, item.value as Boolean)
+                    else -> Log.e(this::class.simpleName, "Unsupported item provided!")
+                }
             }
         }
 

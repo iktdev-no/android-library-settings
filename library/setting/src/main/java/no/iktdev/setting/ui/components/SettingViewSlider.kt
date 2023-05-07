@@ -49,8 +49,8 @@ class SettingViewSlider(context: Context, attrs: AttributeSet? = null, defStyleA
         binding.title.text = base.title
     }
 
-    override fun onSettingAssigned(settingDefined: SettingDefined) {
-        binding.seekbar.progress = settingDefined.getInt(context)
+    override fun onSettingAssigned(setting: SettingDefined) {
+        binding.seekbar.progress = setting.getInt(context, 0)
         binding.value.text = binding.seekbar.progress.toString()
     }
 
@@ -61,7 +61,7 @@ class SettingViewSlider(context: Context, attrs: AttributeSet? = null, defStyleA
     var seekBarChangeListener: OnSeekBarChangeListener = object : OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
             if (fromUser) {
-                settingDefined?.setInt(context, progress)
+                setting?.setInt(context, progress)
             }
             binding.value.text = progress.toString()
         }
@@ -72,7 +72,7 @@ class SettingViewSlider(context: Context, attrs: AttributeSet? = null, defStyleA
 
     init {
         binding.seekbar.setOnSeekBarChangeListener(seekBarChangeListener)
-        binding.seekbar.progress = settingDefined?.getInt(context) ?: 0
+        binding.seekbar.progress = setting?.getInt(context) ?: 0
         if (attrs != null) this.applyAttrs(attrs)
 
     }

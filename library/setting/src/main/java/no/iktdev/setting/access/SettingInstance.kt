@@ -2,92 +2,164 @@ package no.iktdev.setting.access
 
 import android.content.Context
 import android.content.SharedPreferences
-import no.iktdev.setting.model.SettingKey
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import java.io.Serializable
 
-class SettingInstance<T: SettingKey>(val context: Context, val group: String? = null) : SettingAccessor() {
-
-    fun setString(key: T, value: String) {
-        editor(context, key.value).putString(key.value, value).apply()
+class SimpleAccessor(name: String, key: String): SettingAccess(name, key) {
+    private var listener: OnSharedPreferenceChangeListener? = null
+    fun setObserver(context: Context, listener: OnSharedPreferenceChangeListener) {
+        this.listener = listener
+        read(context).registerOnSharedPreferenceChangeListener(listener)
     }
-
-    fun setBoolean(key: T, value: Boolean) {
-        editor(context, key.value).putBoolean(key.value, value).apply()
+    fun removeObserver(context: Context, listener: OnSharedPreferenceChangeListener) {
+        read(context).unregisterOnSharedPreferenceChangeListener(listener)
     }
+}
 
-    fun setFloat(key: T, value: Float) {
-        editor(context, key.value).putFloat(key.value, value).apply()
-    }
+open class SettingAccess(val name: String, val key: String) : Serializable {
 
-    fun setInt(key: T, value: Int) {
-        editor(context, key.value).putInt(key.value, value).apply()
-    }
-
-    fun getString(key: T): String? {
-        return reader(context, key.value).getString(key.value, null)
-    }
-    fun getString(key: T, default: String): String {
-        return reader(context, key.value).getString(key.value, default) ?: default
-    }
-
-    fun getInt(key: T, default: Int = 0): Int {
-        return reader(context, key.value).getInt(key.value, default)
-    }
-
-    fun getBoolean(key: T, default: Boolean = false): Boolean {
-        return reader(context, key.value).getBoolean(key.value, default)
-    }
-
-    fun getFloat(key: T, default: Float = 0F): Float {
-        return reader(context, key.value).getFloat(key.value, default)
-    }
-
-    fun getSettings(key: String): MutableMap<String, *>? {
-        return reader(context, key).all
-    }
-
-
-
-    fun removeSetting(key: String) {
-        editor(context, key).remove(key).apply()
-    }
-
-    fun removeSettingNow(key: String) {
-        editor(context, key).remove(key).commit()
-    }
-
-    fun deleteSetting(key: String) {
-        editor(context, key).clear().apply()
+    fun toAccessor(): SimpleAccessor {
+        return SimpleAccessor(name, key)
     }
 
     /**
-     * Deletes the setting group immediately
+     * Sets a string type setting
+     * @param context Any valid context
+     * @param value Non-null value
+     * If you want to set "null" delete the setting instead.
      */
-    fun deleteSettingNow(key: String) {
-        editor(context, key).clear().commit()
+    open fun setString(context: Context, value: String) {
+        edit(context).putString(key, value).apply()
     }
 
-    fun deleteGroup() {
-        if (group.isNullOrEmpty())
-            throw IllegalStateException("Attempted to delete setting on null or empty")
-        groupEditor(context, group).clear().apply()
+    open fun setBoolean(context: Context, value: Boolean) {
+        edit(context).putBoolean(key, value).apply()
+    }
+
+    open fun setFloat(context: Context, value: Float) {
+        edit(context).putFloat(key, value).apply()
+    }
+
+    open fun setInt(context: Context, value: Int) {
+        edit(context).putInt(key, value).apply()
+    }
+
+    open fun getString(context: Context, default: String): String {
+        return read(context).getString(key, default) ?: default
     }
 
     /**
-     * Deletes the setting group immediately
+     * @return string null if not found
      */
-    fun deleteGroupNow() {
-        if (group.isNullOrEmpty())
-            throw IllegalStateException("Attempted to delete setting on null or empty")
-        groupEditor(context, group).clear().commit()
+    open fun getString(context: Context): String? {
+        return read(context).getString(key, null)
+    }
+
+    open fun getInt(context: Context, default: Int = 0): Int {
+        return read(context).getInt(key, default)
+    }
+
+    /**
+     * @return int 0 if not found
+     */
+    open fun getInt(context: Context): Int {
+        return read(context).getInt(key, 0)
+    }
+
+    open fun getBoolean(context: Context, default: Boolean = false): Boolean {
+        return read(context).getBoolean(key, default)
+    }
+
+    /**
+     * @return boolean false if not found
+     */
+    open fun getBoolean(context: Context): Boolean {
+        return read(context).getBoolean(key, false)
+    }
+
+    open fun getFloat(context: Context, default: Float = 0f): Float {
+        return read(context).getFloat(key, default)
+    }
+
+    /**
+     * @return float 0 if not found
+     */
+    open fun getFloat(context: Context): Float {
+        return read(context).getFloat(key, 0f)
+    }
+
+    fun getSettings(context: Context): MutableMap<String, *>? {
+        return read(context).all
     }
 
 
+    fun read(context: Context): SharedPreferences {
+        return context.getSharedPreferences(name, Context.MODE_PRIVATE)
+    }
+    protected fun edit(context: Context): SharedPreferences.Editor {
+        return getPreference(context, name).edit()
+    }
+    private fun getPreference(context: Context, name: String): SharedPreferences {
+        return context.getSharedPreferences(name, Context.MODE_PRIVATE)
+    }
+}
 
-    protected fun reader(context: Context, key: String): SharedPreferences {
-        return if (group.isNullOrEmpty()) singleReader(context, key) else groupReader(context, group)
+
+open class GroupBasedSetting(val group: String, key: String): SettingAccess(group, key) {
+
+
+    fun asStatic(): GroupedStaticSetting {
+        return GroupedStaticSetting(group, key)
+    }
+    fun asReactive(): GroupedReactiveSetting {
+        return GroupedReactiveSetting(group, key)
     }
 
-    protected fun editor(context: Context, key: String): SharedPreferences.Editor {
-        return if (group.isNullOrEmpty()) singleEditor(context, key) else groupEditor(context, group)
+    /**
+     * This will request deletion of setting group
+     * @param context Any valid context
+     * @param now true = commit, false = apply
+     * If now is false, deletion will be up to system
+     */
+    fun deleteGroup(context: Context, now: Boolean = true) {
+        val rm = edit(context).clear()
+        if (now) rm.commit() else rm.apply()
     }
+
+    /**
+     * This will request deletion of setting group
+     * @param context Any valid context
+     * @param now true = commit, false = apply
+     * If now is false, deletion will be up to system
+     */
+    fun deleteSetting(context: Context, now: Boolean = true) {
+        val rm = edit(context).remove(key)
+        if (now) rm.commit() else rm.apply()
+    }
+}
+
+open class KeyBasedSetting(key: String): SettingAccess(key, key) {
+
+    /**
+     * This will request deletion of setting group
+     * @param context Any valid context
+     * @param now true = commit, false = apply
+     * If now is false, deletion will be up to system
+     */
+    fun deleteSetting(context: Context, now: Boolean = true) {
+        val rm = edit(context).clear()
+        if (now) rm.commit() else rm.apply()
+    }
+}
+
+interface ReactiveSetting: Serializable {
+    companion object {
+        const val ReactiveGroupPassKey = "group"
+        const val ReactiveKeyPassKey = "key"
+        const val ReactivePayloadPassKey = "ReactivePayloadValuePassKey"
+        const val ReactiveValuePassKey = "ReactiveValuePassKey"
+    }
+
+    fun onChange(context: Context)
+    fun setPayload(data: Serializable)
 }

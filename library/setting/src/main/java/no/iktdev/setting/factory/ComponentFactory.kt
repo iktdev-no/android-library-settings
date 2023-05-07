@@ -38,7 +38,7 @@ class ComponentFactory(private val context: Context, val items: List<SettingComp
             view?.setDescriptorValues(it)
             setOffset(items.indexOf(it), view)
             if (it is SettingComponentDescriptor) {
-                view?.settingDefined = it.settingDefined
+                view?.setting = it.setting
             }
             view
         }

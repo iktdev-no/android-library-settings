@@ -28,11 +28,12 @@ abstract class SettingViewBase(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     abstract val binding: ViewBinding?
-    var settingDefined: SettingDefined? = null
+    var setting: SettingDefined? = null
         set(value) {
             field = value ?: return
             onSettingAssigned(value)
         }
+
 
     protected val defaultColor: Int = ContextCompat.getColor(context, R.color.colorAccent)
     override fun onAttachedToWindow() {
@@ -90,6 +91,6 @@ abstract class SettingViewBase(
     abstract fun setTheme(theme: ThemeItem)
     abstract fun setDescriptorValues(base: SettingComponentDescriptorBase)
 
-    abstract fun onSettingAssigned(settingDefined: SettingDefined)
+    open fun onSettingAssigned(setting: SettingDefined) {}
     abstract fun setPayload(payload: ComponentData)
 }

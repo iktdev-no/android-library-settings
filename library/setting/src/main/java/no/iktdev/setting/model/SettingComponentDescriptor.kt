@@ -11,7 +11,7 @@ data class SettingComponentDescriptor(
     override val title: String,
     val description: String? = null,
     val payload: ComponentData? = null,
-    val settingDefined: SettingDefined? = null,
+    val setting: SettingDefined? = null,
     override val type: SettingComponentType = SettingComponentType.CLICKABLE
     ) : SettingComponentDescriptorBase(groupName, title, type) {
         fun hasDescription(): Boolean = description != null

@@ -7,7 +7,6 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import no.iktdev.setting.R
-import no.iktdev.setting.access.SettingDefined
 import no.iktdev.setting.databinding.SettingViewLaunchBinding
 import no.iktdev.setting.model.*
 
@@ -53,10 +52,6 @@ class SettingViewLaunch(context: Context, attrs: AttributeSet? = null) :
             binding.subText.text = base.description
             binding.subText.visibility = VISIBLE
         } else binding.subText.visibility = GONE
-
-    }
-
-    override fun onSettingAssigned(settingDefined: SettingDefined) {
 
     }
 

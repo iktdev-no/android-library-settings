@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import no.iktdev.setting.Assist
 import no.iktdev.setting.R
-import no.iktdev.setting.access.SettingDefined
 import no.iktdev.setting.databinding.SettingViewClickableBinding
 import no.iktdev.setting.model.*
 
@@ -44,7 +44,6 @@ class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : Sett
         } else binding.subText.visibility = GONE
     }
 
-    override fun onSettingAssigned(settingDefined: SettingDefined) {}
 
 
     override fun onTypedArray(a: TypedArray) {
@@ -69,13 +68,18 @@ class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : Sett
             binding.root.setOnClickListener {
                 val i = Intent(context, payload.target)
                 val bundle = payload.value
+
+                Assist().isSerializable(payload.value)
+
                 if (bundle != null) {
                     i.putExtras(bundle)
                 }
                 context.startActivity(i)
+
             }
         }
     }
+
 
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
