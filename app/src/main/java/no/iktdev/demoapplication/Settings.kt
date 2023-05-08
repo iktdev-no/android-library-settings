@@ -1,6 +1,5 @@
 package no.iktdev.demoapplication
 
-import android.content.Context
 import no.iktdev.setting.access.GroupBasedSetting
 
 class Settings {
@@ -23,6 +22,7 @@ class Settings {
     sealed class ValueSelector(key: String): GroupBasedSetting("Valuy", key) {
         class PercentageIsFun : ValueSelector("PercentalgeIsFun")
         class SelectSomething : ValueSelector("SelectSomething")
+        class SelectSomethingElse : ValueSelector("SelectSomethingElse")
     }
 
 

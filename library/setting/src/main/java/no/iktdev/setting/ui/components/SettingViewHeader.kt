@@ -6,9 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import no.iktdev.setting.R
 import no.iktdev.setting.databinding.SettingViewHeaderBinding
-import no.iktdev.setting.model.ComponentData
-import no.iktdev.setting.model.SettingComponentDescriptorBase
-import no.iktdev.setting.model.ThemeItem
+import no.iktdev.setting.ui.Theming
 
 class SettingViewHeader(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     SettingViewBase(context, attrs) {
@@ -26,19 +24,12 @@ class SettingViewHeader(context: Context, attrs: AttributeSet? = null, defStyleA
     }
 
 
-    override fun setTheme(theme: ThemeItem) {
+    override fun setTheme(theme: Theming) {
         val attr = context.obtainStyledAttributes(theme.theme, R.styleable.SettingViewHeader)
         onTypedArray(attr)
         attr.recycle()
     }
 
-    override fun setDescriptorValues(base: SettingComponentDescriptorBase) {
-
-    }
-
-
-    override fun setPayload(payload: ComponentData) {
-    }
 
     init {
         if (attrs != null) this.applyAttrs(attrs)

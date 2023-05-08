@@ -12,14 +12,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import no.iktdev.setting.R
-import no.iktdev.setting.access.SettingDefined
+import no.iktdev.setting.access.SettingAccess
 import no.iktdev.setting.model.ComponentData
 import no.iktdev.setting.model.SettingComponentDescriptorBase
-import no.iktdev.setting.model.ThemeItem
+import no.iktdev.setting.ui.Theming
 
-
-/*abstract class SettingViewBase
-    @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr) */
 
 abstract class SettingViewBase(
     context: Context,
@@ -28,12 +25,13 @@ abstract class SettingViewBase(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     abstract val binding: ViewBinding?
-    var setting: SettingDefined? = null
-        set(value) {
-            field = value ?: return
-            onSettingAssigned(value)
-        }
+    var setting: SettingAccess? = null
+        private set
 
+    fun setSetting(setting: SettingAccess) {
+        this.setting = setting
+        onSettingAssigned(setting)
+    }
 
     protected val defaultColor: Int = ContextCompat.getColor(context, R.color.colorAccent)
     override fun onAttachedToWindow() {
@@ -88,9 +86,12 @@ abstract class SettingViewBase(
 
     abstract fun onTypedArray(a: TypedArray)
     abstract fun applyAttrs(attrs: AttributeSet)
-    abstract fun setTheme(theme: ThemeItem)
-    abstract fun setDescriptorValues(base: SettingComponentDescriptorBase)
+    abstract fun setTheme(theme: Theming)
+    open fun setDescriptorValues(base: SettingComponentDescriptorBase) {}
 
-    open fun onSettingAssigned(setting: SettingDefined) {}
-    abstract fun setPayload(payload: ComponentData)
+    open fun onSettingAssigned(setting: SettingAccess) {}
+    open fun setPayload(payload: ComponentData) {}
+
+    class SettingComponentInvalidValueException(override val message: String): RuntimeException()
+
 }

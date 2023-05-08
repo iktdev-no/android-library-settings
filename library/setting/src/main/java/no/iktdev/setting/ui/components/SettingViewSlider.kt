@@ -8,12 +8,10 @@ import android.view.LayoutInflater
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import no.iktdev.setting.R
-import no.iktdev.setting.access.SettingDefined
+import no.iktdev.setting.access.SettingAccess
 import no.iktdev.setting.databinding.SettingViewSliderBinding
-import no.iktdev.setting.model.ComponentData
-import no.iktdev.setting.model.SettingComponentDescriptor
 import no.iktdev.setting.model.SettingComponentDescriptorBase
-import no.iktdev.setting.model.ThemeItem
+import no.iktdev.setting.ui.Theming
 
 class SettingViewSlider(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     SettingViewBase(context, attrs, defStyleAttr) {
@@ -37,26 +35,21 @@ class SettingViewSlider(context: Context, attrs: AttributeSet? = null, defStyleA
         a.recycle()
     }
 
-    override fun setTheme(theme: ThemeItem) {
+    override fun setTheme(theme: Theming) {
         val attr = context.obtainStyledAttributes(theme.theme, R.styleable.SettingViewSlider)
         onTypedArray(attr)
         attr.recycle()
     }
 
     override fun setDescriptorValues(base: SettingComponentDescriptorBase) {
-        if (base !is SettingComponentDescriptor)
-            return
         binding.title.text = base.title
     }
 
-    override fun onSettingAssigned(setting: SettingDefined) {
+    override fun onSettingAssigned(setting: SettingAccess) {
         binding.seekbar.progress = setting.getInt(context, 0)
         binding.value.text = binding.seekbar.progress.toString()
     }
 
-    override fun setPayload(payload: ComponentData) {
-
-    }
 
     var seekBarChangeListener: OnSeekBarChangeListener = object : OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {

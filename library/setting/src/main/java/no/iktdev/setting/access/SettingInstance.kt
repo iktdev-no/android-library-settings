@@ -5,7 +5,29 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import java.io.Serializable
 
-class SimpleAccessor(name: String, key: String): SettingAccess(name, key) {
+enum class SettingReferenceType {
+    REACTIVE,
+    STATIC
+}
+enum class SettingAccessMode {
+    SINGLE,
+    GROUPED
+}
+data class SettingReference(val name: String, val key: String, val type: SettingReferenceType, val mode: SettingAccessMode): Serializable {
+
+    /**
+     * Unsafe, not tested
+     */
+    fun trueInstance(): SettingAccess {
+        return if (type == SettingReferenceType.REACTIVE) {
+            if (mode == SettingAccessMode.GROUPED) GroupedReactiveSetting(name, key) else SingleReactiveSetting(key)
+        } else {
+            if (mode == SettingAccessMode.GROUPED) GroupedStaticSetting(name, key) else SingleStaticSetting(key)
+        }
+    }
+}
+
+open class SettingAccess(val name: String, val key: String) : Serializable {
     private var listener: OnSharedPreferenceChangeListener? = null
     fun setObserver(context: Context, listener: OnSharedPreferenceChangeListener) {
         this.listener = listener
@@ -14,12 +36,17 @@ class SimpleAccessor(name: String, key: String): SettingAccess(name, key) {
     fun removeObserver(context: Context, listener: OnSharedPreferenceChangeListener) {
         read(context).unregisterOnSharedPreferenceChangeListener(listener)
     }
-}
 
-open class SettingAccess(val name: String, val key: String) : Serializable {
-
-    fun toAccessor(): SimpleAccessor {
-        return SimpleAccessor(name, key)
+    fun toReference(): SettingReference {
+        val type = when(this) {
+            is ReactiveSetting -> SettingReferenceType.REACTIVE
+            else -> SettingReferenceType.STATIC
+        }
+        val mode = when(this) {
+            is GroupBasedSetting -> SettingAccessMode.GROUPED
+            else -> SettingAccessMode.SINGLE
+        }
+        return SettingReference(name, key, type, mode)
     }
 
     /**

@@ -8,7 +8,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import no.iktdev.setting.R
 import no.iktdev.setting.databinding.SettingViewLaunchBinding
-import no.iktdev.setting.model.*
+import no.iktdev.setting.model.ComponentData
+import no.iktdev.setting.model.LaunchableComponentData
+import no.iktdev.setting.model.SettingComponentDescriptor
+import no.iktdev.setting.model.SettingComponentDescriptorBase
+import no.iktdev.setting.ui.Theming
 
 class SettingViewLaunch(context: Context, attrs: AttributeSet? = null) :
     SettingViewBase(context, attrs) {
@@ -36,28 +40,28 @@ class SettingViewLaunch(context: Context, attrs: AttributeSet? = null) :
     }
 
 
-    override fun setTheme(theme: ThemeItem) {
+    override fun setTheme(theme: Theming) {
         val attr = context.obtainStyledAttributes(theme.theme, R.styleable.SettingViewLaunch)
         onTypedArray(attr)
         attr.recycle()
     }
 
     override fun setDescriptorValues(base: SettingComponentDescriptorBase) {
-        if (base !is SettingComponentDescriptor)
-            return
-        if (base.icon != null)
-            binding.icon.setImageResource(base.icon)
-        binding.text.text = base.title
-        if (base.description != null) {
-            binding.subText.text = base.description
-            binding.subText.visibility = VISIBLE
-        } else binding.subText.visibility = GONE
-
+        (if (base is SettingComponentDescriptor) base else null)?.let { desc ->
+            desc.icon?.let { icon ->
+                binding.icon.setImageResource(icon)
+            }
+            binding.text.text = desc.title
+            if (desc.description != null) {
+                binding.subText.text = desc.description
+                binding.subText.visibility = VISIBLE
+            } else binding.subText.visibility = GONE
+        }
     }
 
     override fun setPayload(payload: ComponentData) {
-        if (payload is LaunchableComponentData) {
-            setOnClickListener(Uri.parse(payload.uri))
+        (if (payload is LaunchableComponentData) payload else null)?.let { load ->
+            setOnClickListener(Uri.parse(load.uri))
         }
     }
 

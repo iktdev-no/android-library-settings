@@ -11,11 +11,13 @@ import android.widget.AdapterView
 import android.widget.BaseAdapter
 import androidx.appcompat.view.ContextThemeWrapper
 import no.iktdev.setting.R
-import no.iktdev.setting.access.ReactiveSettingDefined
-import no.iktdev.setting.access.SettingDefined
+import no.iktdev.setting.access.*
 import no.iktdev.setting.databinding.AdapterSingleTextviewBinding
 import no.iktdev.setting.databinding.SettingViewDropdownBinding
-import no.iktdev.setting.model.*
+import no.iktdev.setting.model.ComponentData
+import no.iktdev.setting.model.DropdownItem
+import no.iktdev.setting.model.SettingComponentDescriptorBase
+import no.iktdev.setting.ui.Theming
 import java.io.Serializable
 
 class SettingViewDropdown(context: Context, attrs: AttributeSet? = null) :
@@ -41,19 +43,17 @@ class SettingViewDropdown(context: Context, attrs: AttributeSet? = null) :
 
     private var adapter: DropdownAdapter? = null
 
-    override fun setTheme(theme: ThemeItem) {
+    override fun setTheme(theme: Theming) {
         val attr = ContextThemeWrapper(context, theme.theme).theme.obtainStyledAttributes(R.styleable.SettingViewDropdown)
         onTypedArray(attr)
         attr.recycle()
     }
 
     override fun setDescriptorValues(base: SettingComponentDescriptorBase) {
-        if (base !is SettingComponentDescriptor)
-            return
         binding.title.text = base.title
     }
 
-    override fun onSettingAssigned(setting: SettingDefined) {
+    override fun onSettingAssigned(setting: SettingAccess) {
         val value: Any? = setting.getSettings(context)?.get(setting.key)
         val item = adapter?.items?.find { it.value == value }
         if (item != null) {
@@ -72,9 +72,11 @@ class SettingViewDropdown(context: Context, attrs: AttributeSet? = null) :
         }
         binding.dropdown.onItemSelectedListener = null // Resetting in order to prevent notification on drawing
         if (adapter == null) {
+            @Suppress("UNCHECKED_CAST")
             adapter = DropdownAdapter(context, payload.value as List<DropdownItem>)
             binding.dropdown.adapter = adapter
         } else {
+            @Suppress("UNCHECKED_CAST")
             adapter?.items = payload.value as List<DropdownItem>
             adapter?.notifyDataSetChanged()
         }
@@ -85,8 +87,8 @@ class SettingViewDropdown(context: Context, attrs: AttributeSet? = null) :
             val item = adapter?.items?.get(position)
             setting?.let { setting ->
                 val payload = if (item?.payload != null) item.payload else if (item?.value is Serializable) item.value else null
-                if (setting is ReactiveSettingDefined && payload != null && payload is Serializable) {
-                    (setting as ReactiveSettingDefined).setPayload(payload)
+                if (setting is ReactiveSetting && payload != null && payload is Serializable) {
+                    (setting as ReactiveSetting).setPayload(payload)
                 }
 
                 when (item?.value) {
@@ -118,7 +120,7 @@ class SettingViewDropdown(context: Context, attrs: AttributeSet? = null) :
 
         override fun getView(position: Int, view: View?, parent: ViewGroup): View {
             var holder = view
-            var binding: AdapterSingleTextviewBinding?
+            val binding: AdapterSingleTextviewBinding?
             if (holder == null) {
                 binding = AdapterSingleTextviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 holder = binding.root

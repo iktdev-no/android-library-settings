@@ -2,7 +2,7 @@ package no.iktdev.setting.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import no.iktdev.setting.access.SettingDefined
+import no.iktdev.setting.access.SettingAccess
 import java.io.Serializable
 
 data class SettingComponentDescriptor(
@@ -11,7 +11,7 @@ data class SettingComponentDescriptor(
     override val title: String,
     val description: String? = null,
     val payload: ComponentData? = null,
-    val setting: SettingDefined? = null,
+    val setting: SettingAccess? = null,
     override val type: SettingComponentType = SettingComponentType.CLICKABLE
     ) : SettingComponentDescriptorBase(groupName, title, type) {
         fun hasDescription(): Boolean = description != null

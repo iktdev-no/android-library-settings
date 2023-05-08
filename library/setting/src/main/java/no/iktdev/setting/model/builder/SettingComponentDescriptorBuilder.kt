@@ -3,8 +3,7 @@ package no.iktdev.setting.model.builder
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import no.iktdev.setting.Assist
-import no.iktdev.setting.access.SettingDefined
+import no.iktdev.setting.access.SettingAccess
 import no.iktdev.setting.model.ComponentData
 import no.iktdev.setting.model.SettingComponentDescriptor
 import no.iktdev.setting.model.SettingComponentInvalidValueException
@@ -17,7 +16,7 @@ class SettingComponentDescriptorBuilder(val context: Context) {
     private var title: String? = null
     private var description: String? = null
     private var type: SettingComponentType = SettingComponentType.CLICKABLE
-    private var setting: SettingDefined? = null
+    private var setting: SettingAccess? = null
     private var payload: ComponentData? = null
 
     fun setGroupName(@StringRes title: Int): SettingComponentDescriptorBuilder {
@@ -55,7 +54,7 @@ class SettingComponentDescriptorBuilder(val context: Context) {
         return this
     }
 
-    fun setSetting(setting: SettingDefined): SettingComponentDescriptorBuilder {
+    fun setSetting(setting: SettingAccess): SettingComponentDescriptorBuilder {
         this.setting = setting
         return this
     }

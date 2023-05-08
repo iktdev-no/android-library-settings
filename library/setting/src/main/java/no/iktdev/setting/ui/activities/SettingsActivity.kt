@@ -8,15 +8,16 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import no.iktdev.setting.R
 import no.iktdev.setting.access.GroupedReactiveSetting
 import no.iktdev.setting.access.ReactiveSetting
 import no.iktdev.setting.access.SingleReactiveSetting
 import no.iktdev.setting.exception.IncompatibleComponentPassed
 import no.iktdev.setting.exception.NoUiComponentsPassed
 import no.iktdev.setting.factory.ComponentFactory
-import no.iktdev.setting.factory.ThemeType
 import no.iktdev.setting.model.SettingComponentDescriptorBase
-import no.iktdev.setting.model.ThemeItem
+import no.iktdev.setting.ui.ThemeType
+import no.iktdev.setting.ui.Theming
 
 abstract class SettingsActivity: AppCompatActivity() {
     companion object {
@@ -29,12 +30,12 @@ abstract class SettingsActivity: AppCompatActivity() {
         return emptyList()
     }
 
-    open fun themes(): List<ThemeItem> {
+    open fun themes(): List<Theming> {
         return listOf(
-            ThemeItem(ThemeType.NORMAL, no.iktdev.setting.R.style.SettingComponents),
-            ThemeItem(ThemeType.START, no.iktdev.setting.R.style.SettingComponents_Top),
-            ThemeItem(ThemeType.END, no.iktdev.setting.R.style.SettingComponents_Bottom),
-            ThemeItem(ThemeType.SINGLE, no.iktdev.setting.R.style.SettingComponents_Single),
+            Theming(ThemeType.NORMAL, R.style.SettingComponents),
+            Theming(ThemeType.START, R.style.SettingComponents_Top),
+            Theming(ThemeType.END, R.style.SettingComponents_Bottom),
+            Theming(ThemeType.SINGLE, R.style.SettingComponents_Single),
         )
     }
 
@@ -43,9 +44,11 @@ abstract class SettingsActivity: AppCompatActivity() {
 
         val components: Any? = if (intent.hasExtra(componentPassKey)) intent.getSerializableExtra(componentPassKey) else if (preCreatedSettingItems().isNotEmpty()) preCreatedSettingItems() else throw NoUiComponentsPassed("No Ui Settings Components were passed upon initialization")
         if (components !is List<*> || !components.all { it is SettingComponentDescriptorBase }) { throw IncompatibleComponentPassed("Incompatible Ui Component were passed to SettingsActivity") }
+
+        @Suppress("UNCHECKED_CAST")
         val usable: List<SettingComponentDescriptorBase> = components as List<SettingComponentDescriptorBase>
         usable.groupBy { it.groupName }
-            .forEach { (s, list) ->
+            .forEach { (_, list) ->
                 val manufactured = ComponentFactory(this, list, themes()).generate()
                 addAll(manufactured)
         }
