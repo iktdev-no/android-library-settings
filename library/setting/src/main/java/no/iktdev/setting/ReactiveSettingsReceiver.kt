@@ -17,7 +17,7 @@ class ReactiveSettingsReceiver(val context: Context, var listener: Listener?) {
             val bundle = intent?.extras ?: return
             val group: String? = bundle.getString(ReactiveGroupPassKey, null)
             val key : String = bundle.getString(ReactiveKeyPassKey) ?: return
-            val payload: Any = bundle.getSerializable(ReactivePayloadPassKey) ?: return
+            val payload: Any? = bundle.getSerializable(ReactivePayloadPassKey)
 
             if (group.isNullOrBlank()) {
                 // is single
