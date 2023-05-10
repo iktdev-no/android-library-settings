@@ -40,9 +40,9 @@
                 android:id="@+id/toast_me"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:src="@drawable/ic_baseline_launch_24"
+                app:src="@drawable/ic_android_black_24dp"
                 app:srcTint="@color/colorAccent"
-                app:text="Test"
+                app:text="Click Me for Reactive Test"
                 />
             <no.iktdev.setting.ui.components.SettingViewLaunch
                 android:id="@+id/launc_test"

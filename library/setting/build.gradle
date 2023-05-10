@@ -78,7 +78,7 @@ afterEvaluate {
                 artifactId "setting"
 
                 // To create release version, use the "v0.0.0" Schema for release tag
-                version 'TBD'
+                version '0.0.19-alpha4'
 
 
                 artifact(bundleReleaseAar)

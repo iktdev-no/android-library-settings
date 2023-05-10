@@ -31,7 +31,7 @@ class SettingActivity : SettingsRenderActivity() {
         reactiveSettingsReceiver = ReactiveSettingsReceiver(this, object : ReactiveSettingsReceiver.Listener {
             override fun onReactiveGroupSettingsChanged(group: String, key: String, payload: Any?) {
                 super.onReactiveGroupSettingsChanged(group, key, payload)
-                Toast.makeText(this@SettingActivity, "Setting group: $group got changed value for key $key with value $payload", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@SettingActivity, "${this@SettingActivity::class.java.simpleName} Setting group: $group got changed value for key $key with value $payload", Toast.LENGTH_LONG).show()
             }
         })
         titleChange.observe(this) {
@@ -53,27 +53,6 @@ class SettingActivity : SettingsRenderActivity() {
 
     override fun preCreatedSettingItems(): List<SettingComponentDescriptorBase> {
         val external = arrayListOf<SettingComponentDescriptorBase>(
-            SettingComponentDescriptorBuilder(this)
-                .setGroupName(R.string.setting_group_title_launchy)
-                .setTitle("Click me")
-                .setIcon(no.iktdev.setting.R.drawable.ic_android_black_24dp)
-                .setType(SettingComponentType.CLICKABLE)
-                .setPayload(ActionableComponentDataBuilder()
-                    .setTitle("Im Fancy")
-                    .setActivityClass(SettingActivity::class.java)
-                    .applyPayload(componentPassKey, arrayListOf<SettingComponentDescriptorBase>(
-                        SettingComponentDescriptorBuilder(this)
-                            .setGroupName(R.string.setting_cant_keep_me_on)
-                            .setTitle("Click me")
-                            .setIcon(no.iktdev.setting.R.drawable.ic_android_black_24dp)
-                            .setType(SettingComponentType.CLICKABLE)
-                            .setPayload(ActionableComponentDataBuilder()
-                                .setActivityClass(SettingActivity2::class.java)
-                                .build())
-                            .build(),
-                    ))
-                    .build())
-                .build(),
             SettingComponentDescriptorBuilder(this)
                 .setGroupName(R.string.setting_group_title_switchy)
                 .setTitle("Switch One")
@@ -136,8 +115,8 @@ class SettingActivity : SettingsRenderActivity() {
         )
         return external + listOf(
             SettingComponentDescriptorBuilder(this)
-                .setGroupName(R.string.setting_title2)
-                .setTitle(R.string.setting_title2)
+                .setGroupName(R.string.setting_group_title_launchy)
+                .setTitle("I will crash")
                 .setIcon(no.iktdev.setting.R.drawable.ic_android_black_24dp)
                 .setType(SettingComponentType.CLICKABLE)
                 .setPayload(ActionableComponentDataBuilder()
@@ -146,6 +125,27 @@ class SettingActivity : SettingsRenderActivity() {
                     .applyPayload(componentPassKey, external)
                     .build()
                 )
+                .build(),
+            SettingComponentDescriptorBuilder(this)
+                .setGroupName(R.string.setting_group_title_launchy)
+                .setTitle("Click me")
+                .setIcon(no.iktdev.setting.R.drawable.ic_android_black_24dp)
+                .setType(SettingComponentType.CLICKABLE)
+                .setPayload(ActionableComponentDataBuilder()
+                    .setTitle("Im Fancy")
+                    .setActivityClass(SettingActivity::class.java)
+                    .applyPayload(componentPassKey, arrayListOf<SettingComponentDescriptorBase>(
+                        SettingComponentDescriptorBuilder(this)
+                            .setGroupName(R.string.setting_cant_keep_me_on)
+                            .setTitle("Click me")
+                            .setIcon(no.iktdev.setting.R.drawable.ic_android_black_24dp)
+                            .setType(SettingComponentType.CLICKABLE)
+                            .setPayload(ActionableComponentDataBuilder()
+                                .setActivityClass(SettingActivity2::class.java)
+                                .build())
+                            .build(),
+                    ))
+                    .build())
                 .build(),
             SettingComponentDescriptorBuilder(this)
                 .setGroupName(R.string.setting_title)

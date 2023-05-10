@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.iktdev.demoapplication.databinding.ActivityMainBinding
 import no.iktdev.demoapplication.services.LockscreenWidgetActivity
+import no.iktdev.setting.ReactiveSettingsReceiver
+import no.iktdev.setting.access.GroupedReactiveSetting
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,8 +22,16 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        ReactiveSettingsReceiver(this, object : ReactiveSettingsReceiver.Listener {
+            override fun onReactiveGroupSettingsChanged(group: String, key: String, payload: Any?) {
+                super.onReactiveGroupSettingsChanged(group, key, payload)
+                Toast.makeText(this@MainActivity, "${this@MainActivity::class.java.simpleName} Setting group: $group got changed value for key $key with value $payload", Toast.LENGTH_LONG).show()
+            }
+        })
+
         binding.toastMe.setOnClickListener {
-            Toast.makeText(this, "Potet klikka", Toast.LENGTH_LONG).show()
+            val group = GroupedReactiveSetting("Main", "TestMain").asReactive()
+            group.setBoolean(this, !group.getBoolean(this))
         }
 
         binding.launcTest.setOnClickListener(Uri.parse("https://iktdev.no"))

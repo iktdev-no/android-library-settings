@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.*
 import no.iktdev.setting.access.GroupedReactiveSetting
 import no.iktdev.setting.access.ReactiveSetting.Companion.ReactiveGroupPassKey
 import no.iktdev.setting.access.ReactiveSetting.Companion.ReactiveKeyPassKey
@@ -29,11 +31,39 @@ class ReactiveSettingsReceiver(val context: Context, var listener: Listener?) {
 
         }
     }
-    init {
+
+    private var isRegistered = false
+    fun register() {
         context.registerReceiver(receiver, IntentFilter().apply {
             addAction(GroupedReactiveSetting.SETTING_INTENT_FILTER)
             addAction(SingleReactiveSetting.SETTING_INTENT_FILTER)
         })
+        isRegistered = true
+    }
+    fun unregister() {
+        context?.let {
+            if (isRegistered) {
+                it.unregisterReceiver(receiver)
+            }
+        }
+    }
+
+    init {
+        if (context is AppCompatActivity) {
+            (context as AppCompatActivity).lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
+                    super.onResume(owner)
+                    register()
+                }
+
+                override fun onPause(owner: LifecycleOwner) {
+                    super.onPause(owner)
+                    unregister()
+                }
+            })
+        } else {
+            register()
+        }
     }
 
     interface Listener {

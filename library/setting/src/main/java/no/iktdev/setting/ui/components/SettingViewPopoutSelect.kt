@@ -73,7 +73,6 @@ class SettingViewPopoutSelect(context: Context, attrs: AttributeSet? = null) :
     override fun onSettingAssigned(setting: SettingAccess) {
         val value: Any? = setting.getSettings(context)?.get(setting.key)
         val item = adapter?.items?.find { it.value == value }
-        binding.dropdown.onItemSelectedListener = selectionChange
 
         if (item != null) {
             val index = adapter?.items?.indexOf(item) ?: 0
@@ -84,6 +83,8 @@ class SettingViewPopoutSelect(context: Context, attrs: AttributeSet? = null) :
         } else {
             binding.dropdown.setSelection(0)
         }
+        binding.dropdown.onItemSelectedListener = selectionChange
+
     }
 
     override fun setPayload(payload: ComponentData) {
@@ -107,10 +108,12 @@ class SettingViewPopoutSelect(context: Context, attrs: AttributeSet? = null) :
             val item = adapter?.items?.get(position)
             setting?.let { setting ->
                 val payload = if (item?.payload != null) item.payload else if (item?.value is Serializable) item.value else null
-                if (setting is ReactiveSetting && payload != null  && payload is Serializable) {
+                if (setting is ReactiveSetting && payload != null && payload is Serializable) {
                     (setting as ReactiveSetting).setPayload(payload)
                 }
-
+                item?.let {
+                    binding.subText.text = it.displayValue
+                }
                 when (item?.value) {
                     is String -> setting.setString(context, item.value as String)
                     is Int -> setting.setInt(context, item.value as Int)
@@ -121,9 +124,7 @@ class SettingViewPopoutSelect(context: Context, attrs: AttributeSet? = null) :
             }
         }
 
-        override fun onNothingSelected(p0: AdapterView<*>?) {
-
-        }
+        override fun onNothingSelected(p0: AdapterView<*>?) {}
 
     }
 
