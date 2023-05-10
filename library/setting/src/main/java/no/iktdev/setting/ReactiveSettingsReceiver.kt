@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import no.iktdev.setting.access.GroupedReactiveSetting
@@ -34,6 +35,14 @@ class ReactiveSettingsReceiver(val context: Context, var listener: Listener?) {
 
     private var isRegistered = false
     fun register() {
+        if (isRegistered) {
+            Log.e(this::class.java.simpleName, "Receiver is already registered! ${context::class.java.simpleName}")
+            return
+        } else if (context is no.iktdev.setting.ui.activities.SettingsActivity) {
+            Log.e(this::class.java.simpleName, "Registering receiver when inheriting from SettingActivity is not permitted!\n\tPlease override provided functions instead!\n\t\t ${context::class.java.simpleName}")
+            return
+        }
+
         context.registerReceiver(receiver, IntentFilter().apply {
             addAction(GroupedReactiveSetting.SETTING_INTENT_FILTER)
             addAction(SingleReactiveSetting.SETTING_INTENT_FILTER)
@@ -58,7 +67,11 @@ class ReactiveSettingsReceiver(val context: Context, var listener: Listener?) {
 
                 override fun onPause(owner: LifecycleOwner) {
                     super.onPause(owner)
-                    unregister()
+                    try {
+                        unregister()
+                    } catch (e: Exception) {
+                        // Ignore
+                    }
                 }
             })
         } else {
