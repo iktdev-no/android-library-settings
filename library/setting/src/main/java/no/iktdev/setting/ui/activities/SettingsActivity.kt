@@ -8,6 +8,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import no.iktdev.setting.R
 import no.iktdev.setting.access.GroupedReactiveSetting
 import no.iktdev.setting.access.ReactiveSetting
@@ -49,8 +53,12 @@ abstract class SettingsActivity: AppCompatActivity() {
         val usable: List<SettingComponentDescriptorBase> = components as List<SettingComponentDescriptorBase>
         usable.groupBy { it.groupName }
             .forEach { (_, list) ->
-                val manufactured = ComponentFactory(this, list, themes()).generate()
-                addAll(manufactured)
+                lifecycleScope.launch {
+                    val manufactured = ComponentFactory(this@SettingsActivity, list, themes()).generate()
+                    withContext(Dispatchers.Main) {
+                        addAll(manufactured)
+                    }
+                }
         }
     }
 

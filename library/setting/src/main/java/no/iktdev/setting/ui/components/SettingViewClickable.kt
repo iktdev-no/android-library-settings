@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import no.iktdev.setting.Assist
 import no.iktdev.setting.R
 import no.iktdev.setting.databinding.SettingViewClickableBinding
 import no.iktdev.setting.model.ActionableComponentData
@@ -74,8 +73,6 @@ class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : Sett
                 val i = Intent(context, payload.target)
                 val bundle = payload.value
 
-                Assist().isSerializable(payload.value)
-
                 if (bundle != null) {
                     i.putExtras(bundle)
                 }
@@ -91,10 +88,12 @@ class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : Sett
         binding.root.setOnClickListener(l)
     }
 
+    @Suppress("unused")
     fun setText(text: String) {
         binding.text.text = text
     }
 
+    @Suppress("unused")
     fun setSubText(text: String) {
         if (text.isNotEmpty()) {
             binding.subText.text = text
