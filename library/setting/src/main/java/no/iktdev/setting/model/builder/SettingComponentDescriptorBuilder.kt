@@ -83,11 +83,11 @@ class SettingComponentDescriptorBuilder(val context: Context) {
 
     fun build(): SettingComponentDescriptor {
         return SettingComponentDescriptor(
-            icon = icon ?: if (!requiresIcon(type)) null else throw SettingComponentInvalidValueException("No icon was provided to builder"),
+            icon = icon,
             title = title ?: throw SettingComponentInvalidValueException("No title was provided to builder"),
             description = description,
             type = type,
-            groupName = groupName ?: throw SettingComponentInvalidValueException("No title was provided to builder"),
+            groupName = groupName ?: throw SettingComponentInvalidValueException("GroupName was not provided!"),
             setting = setting ?: if (!requiresSetting(type)) null else throw SettingComponentInvalidValueException("Expected Setting Instance, this was not provided"),
             payload = payload
         )

@@ -22,6 +22,9 @@ class SettingViewSlider(context: Context, attrs: AttributeSet? = null, defStyleA
     override fun onTypedArray(a: TypedArray) {
         applyTextAttr(a, binding.title, R.styleable.SettingViewSlider_text)
         applyTextAttr(a, binding.value, R.styleable.SettingViewSlider_current)
+
+        applySrcAttr(a, binding.icon, R.styleable.SettingViewSlider_src)
+        applySrcTintAttr(a, binding.icon, R.styleable.SettingViewSlider_srcTint)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             binding.seekbar.min = getIntAttrValue(a, R.styleable.SettingViewSlider_min, 0)
         }

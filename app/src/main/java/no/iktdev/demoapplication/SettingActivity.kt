@@ -93,6 +93,13 @@ class SettingActivity : SettingsRenderActivity() {
                 .setType(SettingComponentType.SWITCH)
                 .setSetting(Settings.SwitchTest.ReactiveToggle().asReactive())
                 .build(),
+            SettingComponentDescriptorBuilder(this)
+                .setGroupName(R.string.setting_group_title_switchy)
+                .setTitle("Switch")
+                .setDescription("With no icon")
+                .setType(SettingComponentType.SWITCH)
+                .setSetting(Settings.SwitchTest.ReactiveToggle().asReactive())
+                .build(),
 
 
             SettingComponentDescriptorBuilder(this)
