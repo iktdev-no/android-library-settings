@@ -8,13 +8,20 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import no.iktdev.setting.access.ReactiveSettingDefined
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import no.iktdev.setting.R
+import no.iktdev.setting.access.GroupedReactiveSetting
+import no.iktdev.setting.access.ReactiveSetting
+import no.iktdev.setting.access.SingleReactiveSetting
 import no.iktdev.setting.exception.IncompatibleComponentPassed
 import no.iktdev.setting.exception.NoUiComponentsPassed
 import no.iktdev.setting.factory.ComponentFactory
-import no.iktdev.setting.factory.ThemeType
 import no.iktdev.setting.model.SettingComponentDescriptorBase
-import no.iktdev.setting.model.ThemeItem
+import no.iktdev.setting.ui.ThemeType
+import no.iktdev.setting.ui.Theming
 
 abstract class SettingsActivity: AppCompatActivity() {
     companion object {
@@ -27,12 +34,12 @@ abstract class SettingsActivity: AppCompatActivity() {
         return emptyList()
     }
 
-    open fun themes(): List<ThemeItem> {
+    open fun themes(): List<Theming> {
         return listOf(
-            ThemeItem(ThemeType.NORMAL, no.iktdev.setting.R.style.SettingComponents),
-            ThemeItem(ThemeType.START, no.iktdev.setting.R.style.SettingComponents_Top),
-            ThemeItem(ThemeType.END, no.iktdev.setting.R.style.SettingComponents_Bottom),
-            ThemeItem(ThemeType.SINGLE, no.iktdev.setting.R.style.SettingComponents_Single),
+            Theming(ThemeType.NORMAL, R.style.SettingComponents),
+            Theming(ThemeType.START, R.style.SettingComponents_Top),
+            Theming(ThemeType.END, R.style.SettingComponents_Bottom),
+            Theming(ThemeType.SINGLE, R.style.SettingComponents_Single),
         )
     }
 
@@ -41,17 +48,27 @@ abstract class SettingsActivity: AppCompatActivity() {
 
         val components: Any? = if (intent.hasExtra(componentPassKey)) intent.getSerializableExtra(componentPassKey) else if (preCreatedSettingItems().isNotEmpty()) preCreatedSettingItems() else throw NoUiComponentsPassed("No Ui Settings Components were passed upon initialization")
         if (components !is List<*> || !components.all { it is SettingComponentDescriptorBase }) { throw IncompatibleComponentPassed("Incompatible Ui Component were passed to SettingsActivity") }
+
+        @Suppress("UNCHECKED_CAST")
         val usable: List<SettingComponentDescriptorBase> = components as List<SettingComponentDescriptorBase>
         usable.groupBy { it.groupName }
-            .forEach { (s, list) ->
-                val manufactured = ComponentFactory(this, list, themes()).generate()
-                addAll(manufactured)
+            .forEach { (_, list) ->
+                lifecycleScope.launch {
+                    val manufactured = ComponentFactory(this@SettingsActivity, list, themes()).generate()
+                    withContext(Dispatchers.Main) {
+                        addAll(manufactured)
+                    }
+                }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        registerReceiver(receiver, IntentFilter(ReactiveSettingDefined.SETTING_INTENT_FILTER))
+        registerReceiver(receiver, IntentFilter()
+            .apply {
+                addAction(GroupedReactiveSetting.SETTING_INTENT_FILTER)
+                addAction(SingleReactiveSetting.SETTING_INTENT_FILTER)
+            })
     }
 
     private fun addAll(children: List<View>) {
@@ -64,13 +81,20 @@ abstract class SettingsActivity: AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             val bundle = intent.extras ?: return
-            val group: String = bundle.getString(ReactiveSettingDefined.ReactiveGroupPassKey) ?: return
-            val key : String = bundle.getString(ReactiveSettingDefined.ReactiveKeyPassKey) ?: return
-            val payload: Any = bundle.getSerializable(ReactiveSettingDefined.ReactivePayloadPassKey) ?: return
-            onReactiveSettingsChanged(group, key, payload)
+            val group: String? = bundle.getString(ReactiveSetting.ReactiveGroupPassKey, null)
+            val key : String = bundle.getString(ReactiveSetting.ReactiveKeyPassKey) ?: return
+            val payload: Any = bundle.getSerializable(ReactiveSetting.ReactivePayloadPassKey) ?: return
+
+            if (group.isNullOrBlank()) {
+                // is single
+                onReactiveSettingsChanged(key, payload)
+            } else {
+                onReactiveSettingsChanged(group, key, payload)
+            }
         }
     }
 
+    protected open fun onReactiveSettingsChanged(key: String, payload: Any) {}
     protected open fun onReactiveSettingsChanged(group: String, key: String, payload: Any) {}
 
 

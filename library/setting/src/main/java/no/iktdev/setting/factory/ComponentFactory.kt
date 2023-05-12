@@ -8,10 +8,11 @@ import no.iktdev.setting.Assist
 import no.iktdev.setting.model.SettingComponentDescriptor
 import no.iktdev.setting.model.SettingComponentDescriptorBase
 import no.iktdev.setting.model.SettingComponentType
-import no.iktdev.setting.model.ThemeItem
+import no.iktdev.setting.ui.ThemeType
+import no.iktdev.setting.ui.Theming
 import no.iktdev.setting.ui.components.*
 
-class ComponentFactory(private val context: Context, val items: List<SettingComponentDescriptorBase>, val themes: List<ThemeItem> = emptyList()) {
+class ComponentFactory(private val context: Context, val items: List<SettingComponentDescriptorBase>, val themes: List<Theming> = emptyList()) {
 
 
 
@@ -38,7 +39,9 @@ class ComponentFactory(private val context: Context, val items: List<SettingComp
             view?.setDescriptorValues(it)
             setOffset(items.indexOf(it), view)
             if (it is SettingComponentDescriptor) {
-                view?.settingDefined = it.settingDefined
+                it.setting?.let { setting ->
+                    view?.setSetting(setting)
+                }
             }
             view
         }
@@ -68,7 +71,7 @@ class ComponentFactory(private val context: Context, val items: List<SettingComp
         }
     }
 
-    protected fun viewPlacement(item: SettingComponentDescriptorBase): ThemeItem? {
+    protected fun viewPlacement(item: SettingComponentDescriptorBase): Theming? {
         return when {
             items.size == 1 -> themes.find { it.themeType == ThemeType.SINGLE }
             isFirst(items.indexOf(item)) -> themes.find { it.themeType == ThemeType.START }

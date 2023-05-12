@@ -6,9 +6,12 @@ import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import no.iktdev.setting.R
-import no.iktdev.setting.access.SettingDefined
 import no.iktdev.setting.databinding.SettingViewClickableBinding
-import no.iktdev.setting.model.*
+import no.iktdev.setting.model.ActionableComponentData
+import no.iktdev.setting.model.ComponentData
+import no.iktdev.setting.model.SettingComponentDescriptor
+import no.iktdev.setting.model.SettingComponentDescriptorBase
+import no.iktdev.setting.ui.Theming
 
 
 class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : SettingViewBase(context, attrs) {
@@ -26,25 +29,25 @@ class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : Sett
     }
 
 
-    override fun setTheme(theme: ThemeItem) {
+    override fun setTheme(theme: Theming) {
         val attr = context.obtainStyledAttributes(theme.theme, R.styleable.SettingViewClickable)
         onTypedArray(attr)
         attr.recycle()
     }
 
     override fun setDescriptorValues(base: SettingComponentDescriptorBase) {
-        if (base !is SettingComponentDescriptor)
-            return
-        if (base.icon != null)
-            binding.icon.setImageResource(base.icon)
-        binding.text.text = base.title
-        if (base.description != null) {
-            binding.subText.text = base.description
-            binding.subText.visibility = VISIBLE
-        } else binding.subText.visibility = GONE
+        (if (base is SettingComponentDescriptor) base else null)?.let { base ->
+            base.icon?.let { icon ->
+                binding.icon.setImageResource(icon)
+            }
+            binding.text.text = base.title
+            if (!base.description.isNullOrBlank()) {
+                binding.subText.text = base.description
+                binding.subText.visibility = VISIBLE
+            } else binding.subText.visibility = GONE
+        }
     }
 
-    override fun onSettingAssigned(settingDefined: SettingDefined) {}
 
 
     override fun onTypedArray(a: TypedArray) {
@@ -69,23 +72,28 @@ class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : Sett
             binding.root.setOnClickListener {
                 val i = Intent(context, payload.target)
                 val bundle = payload.value
+
                 if (bundle != null) {
                     i.putExtras(bundle)
                 }
                 context.startActivity(i)
+
             }
         }
     }
+
 
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
         binding.root.setOnClickListener(l)
     }
 
+    @Suppress("unused")
     fun setText(text: String) {
-        binding.text.text = text;
+        binding.text.text = text
     }
 
+    @Suppress("unused")
     fun setSubText(text: String) {
         if (text.isNotEmpty()) {
             binding.subText.text = text

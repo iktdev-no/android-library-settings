@@ -3,7 +3,7 @@ package no.iktdev.setting.model.builder
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import no.iktdev.setting.access.SettingDefined
+import no.iktdev.setting.access.SettingAccess
 import no.iktdev.setting.model.ComponentData
 import no.iktdev.setting.model.SettingComponentDescriptor
 import no.iktdev.setting.model.SettingComponentInvalidValueException
@@ -16,7 +16,7 @@ class SettingComponentDescriptorBuilder(val context: Context) {
     private var title: String? = null
     private var description: String? = null
     private var type: SettingComponentType = SettingComponentType.CLICKABLE
-    private var settingDefined: SettingDefined? = null
+    private var setting: SettingAccess? = null
     private var payload: ComponentData? = null
 
     fun setGroupName(@StringRes title: Int): SettingComponentDescriptorBuilder {
@@ -54,8 +54,8 @@ class SettingComponentDescriptorBuilder(val context: Context) {
         return this
     }
 
-    fun setSetting(settingDefined: SettingDefined): SettingComponentDescriptorBuilder {
-        this.settingDefined = settingDefined
+    fun setSetting(setting: SettingAccess): SettingComponentDescriptorBuilder {
+        this.setting = setting
         return this
     }
 
@@ -83,12 +83,12 @@ class SettingComponentDescriptorBuilder(val context: Context) {
 
     fun build(): SettingComponentDescriptor {
         return SettingComponentDescriptor(
-            icon = icon ?: if (!requiresIcon(type)) null else throw SettingComponentInvalidValueException("No icon was provided to builder"),
+            icon = icon,
             title = title ?: throw SettingComponentInvalidValueException("No title was provided to builder"),
             description = description,
             type = type,
-            groupName = groupName ?: throw SettingComponentInvalidValueException("No title was provided to builder"),
-            settingDefined = settingDefined ?: if (!requiresSetting(type)) null else throw SettingComponentInvalidValueException("Expected Setting Instance, this was not provided"),
+            groupName = groupName ?: throw SettingComponentInvalidValueException("GroupName was not provided!"),
+            setting = setting ?: if (!requiresSetting(type)) null else throw SettingComponentInvalidValueException("Expected Setting Instance, this was not provided"),
             payload = payload
         )
     }

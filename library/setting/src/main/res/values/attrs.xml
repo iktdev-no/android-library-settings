@@ -26,6 +26,8 @@
         <attr name="text" />
         <attr name="textColor" />
         <attr name="background" />
+        <attr name="src" />
+        <attr name="srcTint" />
         <attr name="max" format="reference|integer" />
         <attr name="min" format="reference|integer" />
         <attr name="current" format="reference|integer" />

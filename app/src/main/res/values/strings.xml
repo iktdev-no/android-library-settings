@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">DemoApplication</string>
 
+    <string name="setting_group_title_switchy">Switchy</string>
+
+    <string name="setting_group_title_launchy">Launchy</string>
+    <string name="setting_group_title_slidy">Slidy</string>
+    <string name="setting_group_title_droppy">Droppy</string>
+
     <string name="setting_title">Turn me on</string>
     <string name="setting_description">I am fancy!</string>
 

@@ -6,13 +6,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.CompoundButton
 import no.iktdev.setting.R
-import no.iktdev.setting.access.ReactiveSettingDefined
-import no.iktdev.setting.access.SettingDefined
+import no.iktdev.setting.access.ReactiveSetting
+import no.iktdev.setting.access.SettingAccess
 import no.iktdev.setting.databinding.SettingViewSwitchBinding
-import no.iktdev.setting.model.ComponentData
 import no.iktdev.setting.model.SettingComponentDescriptor
 import no.iktdev.setting.model.SettingComponentDescriptorBase
-import no.iktdev.setting.model.ThemeItem
+import no.iktdev.setting.ui.Theming
 
 class SettingViewSwitch(context: Context, attrs: AttributeSet? = null) : SettingViewBase(context, attrs) {
 
@@ -42,44 +41,40 @@ class SettingViewSwitch(context: Context, attrs: AttributeSet? = null) : Setting
     }
 
 
-    override fun setTheme(theme: ThemeItem) {
+    override fun setTheme(theme: Theming) {
         val attr = context.obtainStyledAttributes(theme.theme, R.styleable.SettingViewSwitch)
         onTypedArray(attr)
         attr.recycle()
     }
 
     override fun setDescriptorValues(base: SettingComponentDescriptorBase) {
-        if (base !is SettingComponentDescriptor)
-            return
-        if (base.icon != null)
-            binding.viewSettingSwitchImage.setImageResource(base.icon)
-        binding.viewSettingSwitchText.text = base.title
-        if (base.description != null) {
-            binding.viewSettingSwitchSubText.text = base.description
-            binding.viewSettingSwitchSubText.visibility = VISIBLE
-        } else binding.viewSettingSwitchSubText.visibility = GONE
-    }
-
-    override fun onSettingAssigned(settingDefined: SettingDefined) {
-        val isChecked = settingDefined.getBoolean(context)
-        binding.viewSettingSwitch.isChecked = isChecked
-        settingDefined.reader(context).registerOnSharedPreferenceChangeListener { p0, p1 ->
-            binding.viewSettingSwitch.isChecked = settingDefined.getBoolean(context, false)
+        (if (base is SettingComponentDescriptor) base else null)?.let { desc ->
+            desc.icon?.let { icon ->
+                binding.viewSettingSwitchImage.setImageResource(icon)
+            }
+            binding.viewSettingSwitchText.text = desc.title
+            if (desc.description != null) {
+                binding.viewSettingSwitchSubText.text = desc.description
+                binding.viewSettingSwitchSubText.visibility = VISIBLE
+            } else binding.viewSettingSwitchSubText.visibility = GONE
         }
     }
 
-    override fun setPayload(payload: ComponentData) {
-
+    override fun onSettingAssigned(setting: SettingAccess) {
+        val isChecked = setting.getBoolean(context)
+        binding.viewSettingSwitch.isChecked = isChecked
+        setting.setObserver(context) { _, _ -> binding.viewSettingSwitch.isChecked = setting.getBoolean(context, false) }
+        setOnCheckedChangeListener(switchValueChanged)
     }
+
 
     private val switchValueChanged = CompoundButton.OnCheckedChangeListener { _, value ->
-        if (settingDefined is ReactiveSettingDefined) {
-            val rsd = settingDefined as ReactiveSettingDefined
-            rsd.reactivePayload = value
-            rsd.setBoolean(context, value)
-        } else {
-            settingDefined?.setBoolean(context, value)
+        if (setting is ReactiveSetting) {
+            val rsa = setting as ReactiveSetting
+            rsa.setPayload(value)
         }
+        setting?.setBoolean(context, value)
+
     }
 
     fun setOnCheckedChangeListener(listener: CompoundButton.OnCheckedChangeListener?) {
@@ -87,9 +82,8 @@ class SettingViewSwitch(context: Context, attrs: AttributeSet? = null) : Setting
     }
 
     init {
-        setOnCheckedChangeListener(switchValueChanged)
         binding.root.setOnClickListener { binding.viewSettingSwitch.toggle() }
-        binding.viewSettingSwitch.isChecked = settingDefined?.getBoolean(context) ?: false
+        binding.viewSettingSwitch.isChecked = setting?.getBoolean(context) ?: false
         if (attrs != null) this.applyAttrs(attrs)
     }
 
