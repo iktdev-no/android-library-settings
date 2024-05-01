@@ -1,9 +1,11 @@
 package no.iktdev.setting.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -62,13 +64,23 @@ abstract class SettingsActivity: AppCompatActivity() {
         }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onResume() {
         super.onResume()
-        registerReceiver(receiver, IntentFilter()
-            .apply {
-                addAction(GroupedReactiveSetting.SETTING_INTENT_FILTER)
-                addAction(SingleReactiveSetting.SETTING_INTENT_FILTER)
-            })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(receiver, IntentFilter()
+                .apply {
+                    addAction(GroupedReactiveSetting.SETTING_INTENT_FILTER)
+                    addAction(SingleReactiveSetting.SETTING_INTENT_FILTER)
+                }, RECEIVER_EXPORTED
+            )
+        } else {
+            registerReceiver(receiver, IntentFilter()
+                .apply {
+                    addAction(GroupedReactiveSetting.SETTING_INTENT_FILTER)
+                    addAction(SingleReactiveSetting.SETTING_INTENT_FILTER)
+                })
+        }
     }
 
     private fun addAll(children: List<View>) {
