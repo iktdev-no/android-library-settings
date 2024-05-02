@@ -9,6 +9,12 @@ class DropdownComponentItems(
     override val value: ArrayList<DropdownItem>
 ) : ComponentData(value), Parcelable {
 
+    constructor(vararg items: DropdownItem) : this(ArrayList(items.asList()))
+
+    constructor(items: List<DropdownItem>) : this(ArrayList(items))
+
+    constructor(items: Array<DropdownItem>) : this(ArrayList(items.asList()))
+
     constructor(parcel: Parcel) : this(
         ArrayList<DropdownItem>().apply {
             parcel.readList(this, DropdownItem::class.java.classLoader)
