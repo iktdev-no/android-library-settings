@@ -27,7 +27,33 @@ data class SettingReference(val name: String, val key: String, val type: Setting
     }
 }
 
-open class SettingAccess(val name: String, val key: String) : Serializable {
+open class SettingGroup(private val key: String): Serializable {
+
+    private fun getPreference(context: Context, name: String): SharedPreferences {
+        return context.getSharedPreferences(name, Context.MODE_PRIVATE)
+    }
+    protected fun edit(context: Context): SharedPreferences.Editor {
+        return getPreference(context, key).edit()
+    }
+
+    fun read(context: Context): SharedPreferences {
+        return context.getSharedPreferences(key, Context.MODE_PRIVATE)
+    }
+
+    /**
+     * This will request deletion of setting group
+     * @param context Any valid context
+     * @param now true = commit, false = apply
+     * If now is false, deletion will be up to system
+     */
+    fun deleteGroup(context: Context, now: Boolean = true) {
+        val rm = edit(context).clear()
+        if (now) rm.commit() else rm.apply()
+    }
+}
+
+
+open class SettingAccess(val name: String, val key: String) : SettingGroup(name) {
     private var listener: OnSharedPreferenceChangeListener? = null
     fun setObserver(context: Context, listener: OnSharedPreferenceChangeListener) {
         this.listener = listener
@@ -120,12 +146,6 @@ open class SettingAccess(val name: String, val key: String) : Serializable {
     }
 
 
-    fun read(context: Context): SharedPreferences {
-        return context.getSharedPreferences(name, Context.MODE_PRIVATE)
-    }
-    protected fun edit(context: Context): SharedPreferences.Editor {
-        return getPreference(context, name).edit()
-    }
     private fun getPreference(context: Context, name: String): SharedPreferences {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE)
     }
@@ -142,16 +162,6 @@ open class GroupBasedSetting(val group: String, key: String): SettingAccess(grou
         return GroupedReactiveSetting(group, key)
     }
 
-    /**
-     * This will request deletion of setting group
-     * @param context Any valid context
-     * @param now true = commit, false = apply
-     * If now is false, deletion will be up to system
-     */
-    fun deleteGroup(context: Context, now: Boolean = true) {
-        val rm = edit(context).clear()
-        if (now) rm.commit() else rm.apply()
-    }
 
     /**
      * This will request deletion of setting group
@@ -164,6 +174,7 @@ open class GroupBasedSetting(val group: String, key: String): SettingAccess(grou
         if (now) rm.commit() else rm.apply()
     }
 }
+
 
 open class KeyBasedSetting(key: String): SettingAccess(key, key) {
 
