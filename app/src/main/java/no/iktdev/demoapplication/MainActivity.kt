@@ -39,6 +39,10 @@ class MainActivity : AppCompatActivity() {
         binding.goToSettings.setOnClickListener {
             startActivity(Intent(this, SettingActivity::class.java))
         }
+        binding.goToSettings.setOnLongClickListener {
+            startActivity(Intent(this, SettingActivity2::class.java))
+            true
+        }
 
         binding.startLockActivity.setOnClickListener {
             startActivity(Intent(applicationContext, LockscreenWidgetActivity::class.java))

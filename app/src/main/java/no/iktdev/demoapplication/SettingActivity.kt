@@ -118,6 +118,18 @@ class SettingActivity : SettingsRenderActivity() {
                 .setTitle("Set me to fancy number")
                 .setType(SettingComponentType.SLIDER)
                 .setSetting(Settings.ValueSelector.PercentageIsFun())
+                .build(),
+            SettingComponentDescriptorBuilder(this)
+                .setGroupName(R.string.setting_title)
+                .setTitle(R.string.setting_title)
+                .setType(SettingComponentType.POPOUT_SELECT)
+                .setIcon(no.iktdev.setting.R.drawable.ic_android_black_24dp)
+                .setSetting(Settings.ValueSelector.SelectSomethingElse())
+                .setPayload(ComponentData(arrayListOf<DropdownItem>(
+                    DropdownItem("Stringy", "Potatis"),
+                    DropdownItem("Inti", 0),
+                    DropdownItem("Intifffffffffssssssssssf", 1)
+                )))
                 .build()
         )
         return external + listOf(

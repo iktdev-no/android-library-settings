@@ -2,7 +2,7 @@
 plugins {
     id 'com.android.application' version '7.4.1' apply false
     id 'com.android.library' version '7.4.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.10' apply false
 }
 
 ext {
@@ -10,7 +10,7 @@ ext {
     androidMinSdk = 21
 
     javaVersion = JavaVersion.VERSION_11
-    kotlinJvmTarget = '11'
+    kotlinJvmTarget = '17'
 
     coreLibraries = [
             kotlin : 'androidx.core:core-ktx:1.9.0'
