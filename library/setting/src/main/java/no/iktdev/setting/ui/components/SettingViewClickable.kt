@@ -3,8 +3,11 @@ package no.iktdev.setting.ui.components
 import android.content.Context
 import android.content.Intent
 import android.content.res.TypedArray
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.annotation.DrawableRes
 import no.iktdev.setting.R
 import no.iktdev.setting.databinding.SettingViewClickableBinding
 import no.iktdev.setting.model.ActionableComponentData
@@ -82,6 +85,21 @@ class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : Sett
         }
     }
 
+    @Suppress("unused")
+    fun setSrc(@DrawableRes drawable: Int) {
+        binding.icon.setImageResource(drawable)
+    }
+
+    @Suppress("unused")
+    fun setSrc(bitmap: Bitmap) {
+        binding.icon.setImageBitmap(bitmap)
+    }
+
+    @Suppress("unused")
+    fun setSrc(drawable: Drawable) {
+        binding.icon.setImageDrawable(drawable)
+    }
+
 
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
@@ -100,6 +118,7 @@ class SettingViewClickable(context: Context, attrs: AttributeSet? = null) : Sett
             binding.subText.visibility = VISIBLE
         } else binding.subText.visibility = GONE
     }
+
 
 
 }
