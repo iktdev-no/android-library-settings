@@ -45,9 +45,7 @@ abstract class SettingsActivity: AppCompatActivity() {
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    private fun generate() {
         val components: Any? = if (intent.hasExtra(componentPassKey)) intent.getSerializableExtra(componentPassKey) else if (preCreatedSettingItems().isNotEmpty()) preCreatedSettingItems() else throw NoUiComponentsPassed("No Ui Settings Components were passed upon initialization")
         if (components !is List<*> || !components.all { it is SettingComponentDescriptorBase }) { throw IncompatibleComponentPassed("Incompatible Ui Component were passed to SettingsActivity") }
 
@@ -61,12 +59,17 @@ abstract class SettingsActivity: AppCompatActivity() {
                         addAll(manufactured)
                     }
                 }
-        }
+            }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onResume() {
         super.onResume()
+        generate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(receiver, IntentFilter()
                 .apply {
